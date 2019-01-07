@@ -171,7 +171,7 @@
     <ClCompile Include="Engine\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Input\Mouse.cpp" />
     <ClCompile Include="Engine\Utils\Debug.cpp" />
-    <ClCompile Include="Engine\Utils\StringConverter.cpp" />
+    <ClCompile Include="Engine\Utils\String.cpp" />
     <ClCompile Include="Engine\Application.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\Window.cpp" />
@@ -184,7 +184,7 @@
     <ClInclude Include="Engine\Input\Mouse.h" />
     <ClInclude Include="Engine\Graphics\Graphics.h" />
     <ClInclude Include="Engine\Utils\Debug.h" />
-    <ClInclude Include="Engine\Utils\StringConverter.h" />
+    <ClInclude Include="Engine\Utils\String.h" />
     <ClInclude Include="Engine\Application.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Engine\Window.h" />

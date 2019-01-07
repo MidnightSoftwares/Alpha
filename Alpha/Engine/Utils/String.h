@@ -2,10 +2,10 @@
 
 #include <string>
 
-class StringConverter final
+class StringUtils final
 {
 public:
-    StringConverter() = delete;
+    StringUtils() = delete;
 
 public:
     static std::wstring ToWide(const std::string& str);

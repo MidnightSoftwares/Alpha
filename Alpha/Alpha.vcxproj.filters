@@ -66,9 +66,6 @@
     <ClCompile Include="Engine\Utils\Debug.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utils\StringConverter.cpp">
-      <Filter>Source Files\Engine\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Application.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utils\String.cpp">
+      <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +101,6 @@
     <ClInclude Include="Engine\Utils\Debug.h">
       <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utils\StringConverter.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Application.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Window.h">
       <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utils\String.h">
+      <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

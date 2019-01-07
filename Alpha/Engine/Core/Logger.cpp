@@ -1,5 +1,5 @@
 ﻿#include "Logger.h"
-#include "../Utils/StringConverter.h"
+#include "../Utils/String.h"
 
 //#include <Shlwapi.h>
 
@@ -8,7 +8,7 @@
 void Logger::Log(LogLevel level, const std::string& message,
     const char* file, unsigned long line)
 {
-    return Log(level, StringConverter::ToWide(message), file, line);
+    return Log(level, StringUtils::ToWide(message), file, line);
 }
 
 void Logger::Log(LogLevel level, const std::wstring& message,
@@ -31,8 +31,8 @@ void Logger::Log(LogLevel level, const std::wstring& message,
 
     //const auto fileStr = [file, line]() -> std::wstring
     //{
-    //    return StringConverter::ToWide(PathFindFileNameA(file))
-    //        + L'(' + StringConverter::ToWide(std::to_string(line)) + L')';
+    //    return StringUtils::ToWide(PathFindFileNameA(file))
+    //        + L'(' + StringUtils::ToWide(std::to_string(line)) + L')';
     //}();
 
     const auto logStr = [&levelStr, &message]() -> std::wstring
