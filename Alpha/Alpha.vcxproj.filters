@@ -81,6 +81,9 @@
     <ClCompile Include="Engine\Utils\String.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utils\FileSystem.cpp">
+      <Filter>Source Files\Engine\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Expected.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utils\String.h">
+      <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utils\FileSystem.h">
       <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
