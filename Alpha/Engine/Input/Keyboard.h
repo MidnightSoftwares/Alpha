@@ -24,8 +24,8 @@ public:
     void PushKeyRelease(unsigned char keyCode);
     KeyEvent PopKey();
 
-    void PushChar(unsigned char ch);
-    unsigned char PopChar();
+    void PushChar(wchar_t ch);
+    wchar_t PopChar();
 
 public:
     bool AutoRepeatKeys() const;
@@ -44,5 +44,5 @@ private:
     bool mAutoRepeatChars = false;
     bool mKeyPressed[UCHAR_MAX + 1] = {};
     std::queue<KeyEvent> mKeyQueue;
-    std::queue<unsigned char> mCharQueue;
+    std::queue<wchar_t> mCharQueue;
 };

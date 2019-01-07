@@ -37,7 +37,7 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
         {
             if (mKeyboard->AutoRepeatChars() || !(lParam & 0x40000000))
             {
-                mKeyboard->PushChar(static_cast<unsigned char>(wParam));
+                mKeyboard->PushChar(static_cast<wchar_t>(wParam));
             }
 
             return 0;

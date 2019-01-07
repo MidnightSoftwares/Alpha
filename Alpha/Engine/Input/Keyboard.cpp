@@ -30,12 +30,12 @@ KeyEvent Keyboard::PopKey()
     return keyEvent;
 }
 
-void Keyboard::PushChar(unsigned char ch)
+void Keyboard::PushChar(wchar_t ch)
 {
     mCharQueue.push(ch);
 }
 
-unsigned char Keyboard::PopChar()
+wchar_t Keyboard::PopChar()
 {
     ASSERT(!mCharQueue.empty());
 

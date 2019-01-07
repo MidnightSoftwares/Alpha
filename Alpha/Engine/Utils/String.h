@@ -2,6 +2,9 @@
 
 #include <string>
 
+#define WIDE2(x) L##x
+#define WIDE1(x) WIDE2(x)
+
 class StringUtils final
 {
 public:

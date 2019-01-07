@@ -1,6 +1,8 @@
 #pragma once
 
-#include <string>
+#include "String.h"
+
+#define W_FILE WIDE1(__FILE__)
 
 class FileSystemUtils final
 {

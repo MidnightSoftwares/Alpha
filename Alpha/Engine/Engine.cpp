@@ -1,5 +1,8 @@
 ﻿#include "Engine.h"
 
+#include <sstream>
+#include "Core/Logger.h"
+
 Engine::Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window,
     std::unique_ptr<::Graphics> graphics) :
     Application{hInstance, std::move(window), std::move(graphics)}
@@ -67,7 +70,9 @@ void Engine::Run() const
         {
             const auto ch = mKeyboard->PopChar();
 
-            //
+            std::basic_stringstream<wchar_t> ss;
+            ss << ch;
+            LOG_INFO(ss.str());
         }
 
         while (!mMouse->EventQueueEmpty())
