@@ -1,7 +1,8 @@
 ﻿#include "Engine.h"
 
-Engine::Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window) :
-    Application{hInstance, std::move(window)}
+Engine::Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window,
+    std::unique_ptr<::Graphics> graphics) :
+    Application{hInstance, std::move(window), std::move(graphics)}
 {
 }
 
@@ -19,11 +20,22 @@ Expected<std::unique_ptr<Engine>, Engine::Error> Engine::Create(HINSTANCE hInsta
 
     auto window = std::move(windowE.Value());
 
+    // Create graphics
+    auto graphicsE = Graphics::Create(window.get());
+
+    if (!graphicsE.Valid())
+    {
+        return CreateGraphicsFailed;
+    }
+
+    auto graphics = std::move(graphicsE.Value());
+
     // Create engine instance
     return std::unique_ptr<Engine>{
         new Engine{
             hInstance,
-            std::move(window)
+            std::move(window),
+            std::move(graphics)
         }
     };
 }
@@ -64,6 +76,10 @@ void Engine::Run() const
 
             //
         }
+
+        //
+
+        mGraphics->RenderFrame();
 
         Sleep(16);
     }

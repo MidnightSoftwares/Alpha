@@ -7,11 +7,13 @@ class Engine final : public Application
 public:
     enum Error
     {
-        CreateWindowFailed
+        CreateWindowFailed,
+        CreateGraphicsFailed
     };
 
 private:
-    Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window);
+    Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window,
+        std::unique_ptr<::Graphics> graphics);
 
 public:
     static Expected<std::unique_ptr<Engine>, Error> Create(HINSTANCE hInstance,

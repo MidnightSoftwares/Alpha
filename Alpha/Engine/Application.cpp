@@ -1,10 +1,12 @@
 ﻿#include "Application.h"
 
-Application::Application(HINSTANCE hInstance, std::unique_ptr<::Window> window) :
+Application::Application(HINSTANCE hInstance, std::unique_ptr<::Window> window,
+    std::unique_ptr<::Graphics> graphics) :
     mHInstance{hInstance},
     mWindow{std::move(window)},
     mKeyboard{std::make_unique<::Keyboard>()},
-    mMouse{std::make_unique<::Mouse>()}
+    mMouse{std::make_unique<::Mouse>()},
+    mGraphics{std::move(graphics)}
 {
     // Point window application to class instance
     mWindow->mApplication = this;
@@ -152,4 +154,9 @@ Keyboard* Application::Keyboard() const
 Mouse* Application::Mouse() const
 {
     return mMouse.get();
+}
+
+Graphics* Application::Graphics() const
+{
+    return mGraphics.get();
 }
