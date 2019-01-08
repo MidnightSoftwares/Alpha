@@ -168,6 +168,9 @@
   <ItemGroup>
     <ClCompile Include="Engine\Core\Logger.cpp" />
     <ClCompile Include="Engine\Graphics\Graphics.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\Pipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp" />
     <ClCompile Include="Engine\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Input\Mouse.cpp" />
     <ClCompile Include="Engine\Utils\Debug.cpp" />
@@ -181,6 +184,9 @@
   <ItemGroup>
     <ClInclude Include="Engine\Core\Expected.h" />
     <ClInclude Include="Engine\Core\Logger.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\Pipeline.h" />
     <ClInclude Include="Engine\Input\Keyboard.h" />
     <ClInclude Include="Engine\Input\Mouse.h" />
     <ClInclude Include="Engine\Graphics\Graphics.h" />

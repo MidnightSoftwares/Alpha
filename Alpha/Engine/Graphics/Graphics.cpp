@@ -7,13 +7,15 @@ Graphics::Graphics(::Window* window,
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext,
     Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain,
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView,
-    Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState) :
+    Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState,
+    std::unique_ptr<Pipeline> pipeline) :
     mWindow{window},
     mDevice{std::move(device)},
     mDeviceContext{std::move(deviceContext)},
     mSwapChain{std::move(swapChain)},
     mRenderTargetView{std::move(renderTargetView)},
-    mRasterizerState{std::move(rasterizerState)}
+    mRasterizerState{std::move(rasterizerState)},
+    mPipeline{std::move(pipeline)}
 {
 }
 
@@ -113,6 +115,42 @@ Expected<std::unique_ptr<Graphics>, Graphics::Error> Graphics::Create(::Window* 
         return CreateRasterizerStateFailed;
     }
 
+    // Create pipeline
+    const auto& shadersDirectory = FileSystemUtils::ExecutableDirectory();
+
+    D3D11_INPUT_ELEMENT_DESC layoutDesc[] =
+    {
+        {
+            "POSITION",
+            0,
+            DXGI_FORMAT_R32G32_FLOAT,
+            0,
+            0,
+            D3D11_INPUT_PER_VERTEX_DATA,
+            0
+        },
+        {
+            "COLOR",
+            0,
+            DXGI_FORMAT_R32G32B32_FLOAT,
+            0,
+            D3D11_APPEND_ALIGNED_ELEMENT,
+            D3D11_INPUT_PER_VERTEX_DATA,
+            0
+        }
+    };
+
+    auto pipelineE = Pipeline::Create(device.Get(),
+        layoutDesc, ARRAYSIZE(layoutDesc),
+        shadersDirectory + L"\\VertexShader.cso", shadersDirectory + L"\\PixelShader.cso");
+
+    if (!pipelineE.Valid())
+    {
+        return CreatePipelineFailed;
+    }
+
+    auto pipeline = std::move(pipelineE.Value());
+
     // Create graphics instance
     return std::unique_ptr<Graphics>{
         new Graphics{
@@ -121,7 +159,8 @@ Expected<std::unique_ptr<Graphics>, Graphics::Error> Graphics::Create(::Window* 
             std::move(deviceContext),
             std::move(swapChain),
             std::move(renderTargetView),
-            std::move(rasterizerState)
+            std::move(rasterizerState),
+            std::move(pipeline)
         }
     };
 }

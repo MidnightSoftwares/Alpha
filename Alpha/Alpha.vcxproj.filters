@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Engine\Utils">
       <UniqueIdentifier>{c6a7beab-6ba2-446a-8d15-0747856bc31b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Graphics\Shaders">
+      <UniqueIdentifier>{6e7eca7a-c8a5-48fc-8f84-a8e85a9b7ef4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Graphics\Shaders">
+      <UniqueIdentifier>{46c7ffb6-47f4-43de-aed8-b8cdad762292}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Logger.cpp">
@@ -84,6 +90,15 @@
     <ClCompile Include="Engine\Utils\FileSystem.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shaders\Pipeline.cpp">
+      <Filter>Source Files\Engine\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp">
+      <Filter>Source Files\Engine\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
+      <Filter>Source Files\Engine\Graphics\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Expected.h">
@@ -118,6 +133,15 @@
     </ClInclude>
     <ClInclude Include="Engine\Utils\FileSystem.h">
       <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\Pipeline.h">
+      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h">
+      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
+      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

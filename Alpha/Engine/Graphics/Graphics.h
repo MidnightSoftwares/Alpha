@@ -1,9 +1,6 @@
 ﻿#pragma once
 
-#include "../Core/Expected.h"
-
-#include <d3d11.h>
-#include <wrl/client.h>
+#include "Shaders/Pipeline.h"
 
 class Window;
 
@@ -15,7 +12,8 @@ public:
         CreateDeviceAndSwapChainFailed,
         GetSwapChainBackBufferFailed,
         CreateRenderTargetViewFailed,
-        CreateRasterizerStateFailed
+        CreateRasterizerStateFailed,
+        CreatePipelineFailed
     };
 
 private:
@@ -24,7 +22,8 @@ private:
         Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext,
         Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain,
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView,
-        Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState);
+        Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState,
+        std::unique_ptr<Pipeline> pipeline);
 
 public:
     Graphics(const Graphics& graphics) = delete;
@@ -51,4 +50,5 @@ private:
     Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRasterizerState;
+    std::unique_ptr<Pipeline> mPipeline;
 };
