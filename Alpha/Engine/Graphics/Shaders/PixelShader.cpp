@@ -1,5 +1,5 @@
 #include "PixelShader.h"
-#include "../../Core/Logger.h"
+#include "../../Utils/Logger.h"
 
 #include <d3dcompiler.h>
 

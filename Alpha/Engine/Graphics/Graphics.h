@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "Shaders/Pipeline.h"
+#include "Shaders/VertexShader.h"
+#include "Shaders/PixelShader.h"
 
 class Window;
 
@@ -13,7 +14,8 @@ public:
         GetSwapChainBackBufferFailed,
         CreateRenderTargetViewFailed,
         CreateRasterizerStateFailed,
-        CreatePipelineFailed
+        CreateVertexShaderFailed,
+        CreatePixelShaderFailed
     };
 
 private:
@@ -23,7 +25,8 @@ private:
         Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain,
         Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView,
         Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState,
-        std::unique_ptr<Pipeline> pipeline);
+        std::unique_ptr<VertexShader> vertexShader,
+        std::unique_ptr<PixelShader> pixelShader);
 
 public:
     Graphics(const Graphics& graphics) = delete;
@@ -50,5 +53,6 @@ private:
     Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRasterizerState;
-    std::unique_ptr<Pipeline> mPipeline;
+    std::unique_ptr<VertexShader> mVertexShader;
+    std::unique_ptr<PixelShader> mPixelShader;
 };

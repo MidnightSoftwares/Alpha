@@ -1,6 +1,6 @@
 ﻿#include "Window.h"
 #include "Application.h"
-#include "Core/Logger.h"
+#include "../Utils/Logger.h"
 
 Window::Window(HINSTANCE hInstance, std::wstring className,
     std::wstring title, int width, int height, HWND handle) :

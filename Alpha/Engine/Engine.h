@@ -1,6 +1,9 @@
 ﻿#pragma once
 
-#include "Application.h"
+#include "Application/Application.h"
+#include "Graphics/Graphics.h"
+
+class Graphics;
 
 class Engine final : public Application
 {
@@ -13,7 +16,7 @@ public:
 
 private:
     Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window,
-        std::unique_ptr<::Graphics> graphics);
+        std::unique_ptr<Graphics> graphics);
 
 public:
     static Expected<std::unique_ptr<Engine>, Error> Create(HINSTANCE hInstance,
@@ -21,4 +24,10 @@ public:
 
 public:
     void Run() const;
+
+public:
+    Graphics* Graphics() const;
+
+private:
+    std::unique_ptr<::Graphics> mGraphics;
 };

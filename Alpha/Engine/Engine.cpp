@@ -1,11 +1,9 @@
 ﻿#include "Engine.h"
 
-#include <sstream>
-#include "Core/Logger.h"
-
 Engine::Engine(HINSTANCE hInstance, std::unique_ptr<::Window> window,
     std::unique_ptr<::Graphics> graphics) :
-    Application{hInstance, std::move(window), std::move(graphics)}
+    Application{hInstance, std::move(window)},
+    mGraphics{std::move(graphics)}
 {
 }
 
@@ -52,9 +50,9 @@ void Engine::Run() const
             continue;
         }
 
-        while (!mKeyboard->KeyQueueEmpty())
+        while (!mInput->KeyEventQueueEmpty())
         {
-            const auto keyEvent = mKeyboard->PopKey();
+            const auto keyEvent = mInput->PopKeyEvent();
 
             DEBUG_ONLY(
                 if (keyEvent.KeyCode == VK_ESCAPE && keyEvent.Type == KeyEvent::Release)
@@ -66,16 +64,16 @@ void Engine::Run() const
             //
         }
 
-        while (!mKeyboard->CharQueueEmpty())
+        while (!mInput->CharQueueEmpty())
         {
-            const auto ch = mKeyboard->PopChar();
+            const auto ch = mInput->PopChar();
 
             //
         }
 
-        while (!mMouse->EventQueueEmpty())
+        while (!mInput->MouseEventQueueEmpty())
         {
-            const auto mouseEvent = mMouse->PopEvent();
+            const auto mouseEvent = mInput->PopMouseEvent();
 
             //
         }
@@ -86,4 +84,9 @@ void Engine::Run() const
 
         Sleep(16);
     }
+}
+
+Graphics* Engine::Graphics() const
+{
+    return mGraphics.get();
 }

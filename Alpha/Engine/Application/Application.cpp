@@ -1,12 +1,9 @@
 ﻿#include "Application.h"
 
-Application::Application(HINSTANCE hInstance, std::unique_ptr<::Window> window,
-    std::unique_ptr<::Graphics> graphics) :
+Application::Application(HINSTANCE hInstance, std::unique_ptr<::Window> window) :
     mHInstance{hInstance},
     mWindow{std::move(window)},
-    mKeyboard{std::make_unique<::Keyboard>()},
-    mMouse{std::make_unique<::Mouse>()},
-    mGraphics{std::move(graphics)}
+    mInput{std::make_unique<::Input>()}
 {
     // Point window application to class instance
     mWindow->mApplication = this;
@@ -18,9 +15,9 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
     {
         case WM_KEYDOWN:
         {
-            if (mKeyboard->AutoRepeatKeys() || !(lParam & 0x40000000))
+            if (mInput->AutoRepeatKeys() || !(lParam & 0x40000000))
             {
-                mKeyboard->PushKeyPress(static_cast<unsigned char>(wParam));
+                mInput->PushKeyPress(static_cast<unsigned char>(wParam));
             }
 
             return 0;
@@ -28,16 +25,16 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 
         case WM_KEYUP:
         {
-            mKeyboard->PushKeyRelease(static_cast<unsigned char>(wParam));
+            mInput->PushKeyRelease(static_cast<unsigned char>(wParam));
 
             return 0;
         }
 
         case WM_CHAR:
         {
-            if (mKeyboard->AutoRepeatChars() || !(lParam & 0x40000000))
+            if (mInput->AutoRepeatChars() || !(lParam & 0x40000000))
             {
-                mKeyboard->PushChar(static_cast<wchar_t>(wParam));
+                mInput->PushChar(static_cast<wchar_t>(wParam));
             }
 
             return 0;
@@ -45,7 +42,7 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 
         case WM_MOUSEMOVE:
         {
-            mMouse->PushMove(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseMove(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
@@ -65,7 +62,7 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
                     const auto raw = reinterpret_cast<RAWINPUT*>(rawData.get());
                     if (raw->header.dwType == RIM_TYPEMOUSE)
                     {
-                        mMouse->PushRawMove(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
+                        mInput->PushMouseRawMove(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
                     }
                 }
             }
@@ -75,42 +72,42 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
 
         case WM_LBUTTONDOWN:
         {
-            mMouse->PushLeftPress(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseLeftPress(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
 
         case WM_LBUTTONUP:
         {
-            mMouse->PushLeftRelease(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseLeftRelease(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
 
         case WM_RBUTTONDOWN:
         {
-            mMouse->PushRightPress(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseRightPress(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
 
         case WM_RBUTTONUP:
         {
-            mMouse->PushRightRelease(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseRightRelease(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
 
         case WM_MBUTTONDOWN:
         {
-            mMouse->PushMiddlePress(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseMiddlePress(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
 
         case WM_MBUTTONUP:
         {
-            mMouse->PushMiddleRelease(LOWORD(lParam), HIWORD(lParam));
+            mInput->PushMouseMiddleRelease(LOWORD(lParam), HIWORD(lParam));
 
             return 0;
         }
@@ -119,11 +116,11 @@ LRESULT Application::HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam)
         {
             if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
             {
-                mMouse->PushWheelUp(LOWORD(lParam), HIWORD(lParam));
+                mInput->PushMouseWheelUp(LOWORD(lParam), HIWORD(lParam));
             }
             else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
             {
-                mMouse->PushWheelDown(LOWORD(lParam), HIWORD(lParam));
+                mInput->PushMouseWheelDown(LOWORD(lParam), HIWORD(lParam));
             }
 
             return 0;
@@ -146,17 +143,7 @@ Window* Application::Window() const
     return mWindow.get();
 }
 
-Keyboard* Application::Keyboard() const
+Input* Application::Input() const
 {
-    return mKeyboard.get();
-}
-
-Mouse* Application::Mouse() const
-{
-    return mMouse.get();
-}
-
-Graphics* Application::Graphics() const
-{
-    return mGraphics.get();
+    return mInput.get();
 }

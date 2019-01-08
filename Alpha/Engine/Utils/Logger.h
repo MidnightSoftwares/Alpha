@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "../Utils/Debug.h"
-#include "../Utils/FileSystem.h"
+#include "Debug.h"
+#include "FileSystem.h"
 
 enum class LogLevel
 {

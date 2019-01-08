@@ -1,6 +1,6 @@
 ﻿#include "Graphics.h"
-#include "../Window.h"
-#include "../Core/Logger.h"
+#include "../Application/Window.h"
+#include "../Utils/Logger.h"
 
 Graphics::Graphics(::Window* window,
     Microsoft::WRL::ComPtr<ID3D11Device> device,
@@ -8,14 +8,16 @@ Graphics::Graphics(::Window* window,
     Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain,
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView,
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState,
-    std::unique_ptr<Pipeline> pipeline) :
+    std::unique_ptr<VertexShader> vertexShader,
+    std::unique_ptr<PixelShader> pixelShader) :
     mWindow{window},
     mDevice{std::move(device)},
     mDeviceContext{std::move(deviceContext)},
     mSwapChain{std::move(swapChain)},
     mRenderTargetView{std::move(renderTargetView)},
     mRasterizerState{std::move(rasterizerState)},
-    mPipeline{std::move(pipeline)}
+    mVertexShader{std::move(vertexShader)},
+    mPixelShader{std::move(pixelShader)}
 {
 }
 
@@ -115,7 +117,7 @@ Expected<std::unique_ptr<Graphics>, Graphics::Error> Graphics::Create(::Window* 
         return CreateRasterizerStateFailed;
     }
 
-    // Create pipeline
+    // Create vertex shader
     const auto& shadersDirectory = FileSystemUtils::ExecutableDirectory();
 
     D3D11_INPUT_ELEMENT_DESC layoutDesc[] =
@@ -140,16 +142,27 @@ Expected<std::unique_ptr<Graphics>, Graphics::Error> Graphics::Create(::Window* 
         }
     };
 
-    auto pipelineE = Pipeline::Create(device.Get(),
+    auto vertexShaderE = VertexShader::Create(device.Get(),
         layoutDesc, ARRAYSIZE(layoutDesc),
-        shadersDirectory + L"\\VertexShader.cso", shadersDirectory + L"\\PixelShader.cso");
+        shadersDirectory + L"\\VertexShader.cso");
 
-    if (!pipelineE.Valid())
+    if (!vertexShaderE.Valid())
     {
-        return CreatePipelineFailed;
+        return CreateVertexShaderFailed;
     }
 
-    auto pipeline = std::move(pipelineE.Value());
+    auto vertexShader = std::move(vertexShaderE.Value());
+
+    // Create pixel shader
+    auto pixelShaderE = PixelShader::Create(device.Get(),
+        shadersDirectory + L"\\PixelShader.cso");
+
+    if (!pixelShaderE.Valid())
+    {
+        return CreatePixelShaderFailed;
+    }
+
+    auto pixelShader = std::move(pixelShaderE.Value());
 
     // Create graphics instance
     return std::unique_ptr<Graphics>{
@@ -160,7 +173,8 @@ Expected<std::unique_ptr<Graphics>, Graphics::Error> Graphics::Create(::Window* 
             std::move(swapChain),
             std::move(renderTargetView),
             std::move(rasterizerState),
-            std::move(pipeline)
+            std::move(vertexShader),
+            std::move(pixelShader)
         }
     };
 }

@@ -166,36 +166,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Core\Logger.cpp" />
+    <ClCompile Include="Engine\Application\Input.cpp" />
+    <ClCompile Include="Engine\Utils\Logger.cpp" />
     <ClCompile Include="Engine\Graphics\Graphics.cpp" />
-    <ClCompile Include="Engine\Graphics\Shaders\Pipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp" />
-    <ClCompile Include="Engine\Input\Keyboard.cpp" />
-    <ClCompile Include="Engine\Input\Mouse.cpp" />
     <ClCompile Include="Engine\Utils\Debug.cpp" />
     <ClCompile Include="Engine\Utils\FileSystem.cpp" />
     <ClCompile Include="Engine\Utils\String.cpp" />
-    <ClCompile Include="Engine\Application.cpp" />
+    <ClCompile Include="Engine\Application\Application.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
-    <ClCompile Include="Engine\Window.cpp" />
+    <ClCompile Include="Engine\Application\Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Core\Expected.h" />
-    <ClInclude Include="Engine\Core\Logger.h" />
+    <ClInclude Include="Engine\Application\Input.h" />
+    <ClInclude Include="Engine\Utils\Expected.h" />
+    <ClInclude Include="Engine\Utils\Logger.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
     <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
-    <ClInclude Include="Engine\Graphics\Shaders\Pipeline.h" />
-    <ClInclude Include="Engine\Input\Keyboard.h" />
-    <ClInclude Include="Engine\Input\Mouse.h" />
     <ClInclude Include="Engine\Graphics\Graphics.h" />
     <ClInclude Include="Engine\Utils\Debug.h" />
     <ClInclude Include="Engine\Utils\FileSystem.h" />
     <ClInclude Include="Engine\Utils\String.h" />
-    <ClInclude Include="Engine\Application.h" />
+    <ClInclude Include="Engine\Application\Application.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\Window.h" />
+    <ClInclude Include="Engine\Application\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Resources\Shaders\PixelShader.hlsl">
@@ -220,7 +216,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Engine\Core\Expected.inl" />
+    <None Include="Engine\Utils\Expected.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
 #include "VertexShader.h"
-#include "../../Core/Logger.h"
+#include "../../Utils/Logger.h"
 
 #include <d3dcompiler.h>
 

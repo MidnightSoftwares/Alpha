@@ -1,15 +1,12 @@
 ﻿#pragma once
 
 #include "Window.h"
-#include "Input/Keyboard.h"
-#include "Input/Mouse.h"
-#include "Graphics/Graphics.h"
+#include "Input.h"
 
 class Application
 {
 protected:
-    Application(HINSTANCE hInstance, std::unique_ptr<Window> window,
-        std::unique_ptr<Graphics> graphics);
+    Application(HINSTANCE hInstance, std::unique_ptr<Window> window);
 
 public:
     Application(const Application& application) = delete;
@@ -20,22 +17,18 @@ public:
 
     virtual ~Application() = default;
 
-private:
-    LRESULT HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam) const;
+protected:
+    virtual LRESULT HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam) const;
 
 public:
     HINSTANCE HInstance() const;
     Window* Window() const;
-    Keyboard* Keyboard() const;
-    Mouse* Mouse() const;
-    Graphics* Graphics() const;
+    Input* Input() const;
 
 protected:
     HINSTANCE mHInstance;
     std::unique_ptr<::Window> mWindow;
-    std::unique_ptr<::Keyboard> mKeyboard;
-    std::unique_ptr<::Mouse> mMouse;
-    std::unique_ptr<::Graphics> mGraphics;
+    std::unique_ptr<::Input> mInput;
 
 private:
     friend ::Window;
