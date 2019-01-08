@@ -70,9 +70,7 @@ void Engine::Run() const
         {
             const auto ch = mKeyboard->PopChar();
 
-            std::basic_stringstream<wchar_t> ss;
-            ss << ch;
-            LOG_INFO(ss.str());
+            //
         }
 
         while (!mMouse->EventQueueEmpty())
