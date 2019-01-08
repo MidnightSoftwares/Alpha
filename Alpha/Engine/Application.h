@@ -18,7 +18,7 @@ public:
     Application& operator=(const Application& application) = delete;
     Application& operator=(Application&& application) = delete;
 
-    ~Application() = default;
+    virtual ~Application() = default;
 
 private:
     LRESULT HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam) const;
