@@ -152,4 +152,9 @@
       <Filter>Resource Files\Engine\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Engine\Core\Expected.inl">
+      <Filter>Header Files\Engine\Core</Filter>
+    </None>
+  </ItemGroup>
 </Project>
