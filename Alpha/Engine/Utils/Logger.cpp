@@ -31,6 +31,7 @@ void Logger::Log(LogLevel level, const std::wstring& message,
     {
         std::wstringstream ss;
         ss << L'[' << levelStr << L"][" << fileStr << L"] " << message << L'\n';
+
         return ss.str();
     }();
 

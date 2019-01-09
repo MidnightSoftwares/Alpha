@@ -1,38 +1,25 @@
 #pragma once
 
-#include "../../Utils/Expected.h"
-
 #include <d3d11.h>
-#include <wrl/client.h>
+#include <functional>
+
+class GraphicsDevice;
 
 class PixelShader final
 {
+private:
+    PixelShader(GraphicsDevice* graphicsDevice, ID3D11PixelShader* handle);
+
 public:
-    enum Error
-    {
-        ReadFileToBufferFailed,
-        CreateShaderFailed
-    };
+    GraphicsDevice* GraphicsDevice() const;
 
 private:
-    explicit PixelShader(Microsoft::WRL::ComPtr<ID3D11PixelShader> handle);
-
-public:
-    PixelShader(const PixelShader& pixelShader) = delete;
-    PixelShader(PixelShader&& pixelShader) = delete;
-
-    PixelShader& operator=(const PixelShader& pixelShader) = delete;
-    PixelShader& operator=(PixelShader&& pixelShader) = delete;
-
-    ~PixelShader() = default;
-
-public:
-    static Expected<std::unique_ptr<PixelShader>, Error> Create(ID3D11Device* device,
-        const std::wstring& filePath);
-
-public:
-    ID3D11PixelShader* Handle() const;
+    ::GraphicsDevice* mGraphicsDevice;
+    ID3D11PixelShader* mHandle;
 
 private:
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> mHandle;
+    friend class Graphics;
 };
+
+using PixelShaderDeleter = std::function<void(PixelShader*)>;
+using PixelShaderPtr = std::unique_ptr<PixelShader, PixelShaderDeleter>;

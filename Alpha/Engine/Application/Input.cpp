@@ -1,46 +1,53 @@
 #include "Input.h"
 #include "../Utils/Debug.h"
 
-Input::Input()
+KeyEvent::KeyEvent(enum Type type, unsigned char keyCode):
+    Type{type},
+    KeyCode{keyCode}
 {
-    for (auto& keyPressed : mKeyPressed)
-    {
-        keyPressed = false;
-    }
+}
+
+MouseEvent::MouseEvent(enum Type type, int x, int y):
+    Type{type},
+    X{x},
+    Y{y}
+{
 }
 
 void Input::PushKeyPress(unsigned char keyCode)
 {
     mKeyPressed[keyCode] = true;
-    mKeyEventQueue.push({KeyEvent::Press, keyCode});
+    mKeyEvents.emplace(KeyEvent::Press, keyCode);
 }
 
 void Input::PushKeyRelease(unsigned char keyCode)
 {
     mKeyPressed[keyCode] = false;
-    mKeyEventQueue.push({KeyEvent::Release, keyCode});
+    mKeyEvents.emplace(KeyEvent::Release, keyCode);
 }
 
 KeyEvent Input::PopKeyEvent()
 {
-    ASSERT(!mKeyEventQueue.empty());
+    ASSERT(!mKeyEvents.empty());
 
-    const auto keyEvent = mKeyEventQueue.front();
-    mKeyEventQueue.pop();
+    const auto keyEvent = mKeyEvents.front();
+    mKeyEvents.pop();
+
     return keyEvent;
 }
 
-void Input::PushChar(wchar_t ch)
+void Input::PushCharInput(wchar_t ch)
 {
-    mCharQueue.push(ch);
+    mCharInputs.push(ch);
 }
 
-wchar_t Input::PopChar()
+wchar_t Input::PopCharInput()
 {
-    ASSERT(!mCharQueue.empty());
+    ASSERT(!mCharInputs.empty());
 
-    const auto ch = mCharQueue.front();
-    mCharQueue.pop();
+    const auto ch = mCharInputs.front();
+    mCharInputs.pop();
+
     return ch;
 }
 
@@ -48,66 +55,67 @@ void Input::PushMouseMove(int x, int y)
 {
     mMousePosX = x;
     mMousePosY = y;
-    mMouseEventQueue.push({MouseEvent::Move, x, y});
+    mMouseEvents.emplace(MouseEvent::Move, x, y);
 }
 
 void Input::PushMouseRawMove(int x, int y)
 {
-    mMouseEventQueue.push({MouseEvent::RawMove, x, y});
+    mMouseEvents.emplace(MouseEvent::RawMove, x, y);
 }
 
 void Input::PushMouseLeftPress(int x, int y)
 {
     mMouseLeftPressed = true;
-    mMouseEventQueue.push({MouseEvent::LPress, x, y});
+    mMouseEvents.emplace(MouseEvent::LPress, x, y);
 }
 
 void Input::PushMouseLeftRelease(int x, int y)
 {
     mMouseLeftPressed = false;
-    mMouseEventQueue.push({MouseEvent::LRelease, x, y});
+    mMouseEvents.emplace(MouseEvent::LRelease, x, y);
 }
 
 void Input::PushMouseRightPress(int x, int y)
 {
     mMouseRightPressed = true;
-    mMouseEventQueue.push({MouseEvent::RPress, x, y});
+    mMouseEvents.emplace(MouseEvent::RPress, x, y);
 }
 
 void Input::PushMouseRightRelease(int x, int y)
 {
     mMouseRightPressed = false;
-    mMouseEventQueue.push({MouseEvent::RRelease, x, y});
+    mMouseEvents.emplace(MouseEvent::RRelease, x, y);
 }
 
 void Input::PushMouseMiddlePress(int x, int y)
 {
     mMouseMiddlePressed = true;
-    mMouseEventQueue.push({MouseEvent::MPress, x, y});
+    mMouseEvents.emplace(MouseEvent::MPress, x, y);
 }
 
 void Input::PushMouseMiddleRelease(int x, int y)
 {
     mMouseMiddlePressed = false;
-    mMouseEventQueue.push({MouseEvent::MRelease, x, y});
+    mMouseEvents.emplace(MouseEvent::MRelease, x, y);
 }
 
 void Input::PushMouseWheelUp(int x, int y)
 {
-    mMouseEventQueue.push({MouseEvent::WheelUp, x, y});
+    mMouseEvents.emplace(MouseEvent::WheelUp, x, y);
 }
 
 void Input::PushMouseWheelDown(int x, int y)
 {
-    mMouseEventQueue.push({MouseEvent::WheelDown, x, y});
+    mMouseEvents.emplace(MouseEvent::WheelDown, x, y);
 }
 
 MouseEvent Input::PopMouseEvent()
 {
-    ASSERT(!mMouseEventQueue.empty());
+    ASSERT(!mMouseEvents.empty());
 
-    const auto mouseEvent = mMouseEventQueue.front();
-    mMouseEventQueue.pop();
+    const auto mouseEvent = mMouseEvents.front();
+    mMouseEvents.pop();
+
     return mouseEvent;
 }
 
@@ -136,14 +144,14 @@ bool Input::KeyPressed(unsigned char keyCode) const
     return mKeyPressed[keyCode];
 }
 
-bool Input::KeyEventQueueEmpty() const
+bool Input::KeyEventsEmpty() const
 {
-    return mKeyEventQueue.empty();
+    return mKeyEvents.empty();
 }
 
-bool Input::CharQueueEmpty() const
+bool Input::CharsInputsEmpty() const
 {
-    return mCharQueue.empty();
+    return mCharInputs.empty();
 }
 
 int Input::MousePosX() const
@@ -171,7 +179,7 @@ bool Input::MouseMiddlePressed() const
     return mMouseMiddlePressed;
 }
 
-bool Input::MouseEventQueueEmpty() const
+bool Input::MouseEventsEmpty() const
 {
-    return mMouseEventQueue.empty();
+    return mMouseEvents.empty();
 }

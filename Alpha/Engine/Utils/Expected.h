@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-template <typename T, typename E>
+template <class T, class E>
 class Expected final
 {
 public:

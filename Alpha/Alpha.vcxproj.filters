@@ -49,18 +49,18 @@
     <Filter Include="Source Files\Engine\Graphics\Shaders">
       <UniqueIdentifier>{366760a0-609f-45df-9659-b016f6e65fb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Graphics\Buffers">
+      <UniqueIdentifier>{0d7d6585-8530-4ded-b7a5-d66555d368c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Graphics\Buffers">
+      <UniqueIdentifier>{9eaef563-05a6-4d47-86e2-244ebdf922b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Application\Application.cpp">
-      <Filter>Source Files\Engine\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Application\Input.cpp">
-      <Filter>Source Files\Engine\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\Window.cpp">
       <Filter>Source Files\Engine\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utils\Debug.cpp">
@@ -72,40 +72,46 @@
     <ClCompile Include="Engine\Utils\Logger.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Graphics.cpp">
-      <Filter>Source Files\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Utils\String.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
-      <Filter>Source Files\Engine\Graphics\Shaders</Filter>
+    <ClCompile Include="Engine\Application\WindowClass.cpp">
+      <Filter>Source Files\Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Application\Window.cpp">
+      <Filter>Source Files\Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Application\Application.cpp">
+      <Filter>Source Files\Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\GraphicsDevice.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp">
       <Filter>Source Files\Engine\Graphics\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
+      <Filter>Source Files\Engine\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\RasterizerState.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Buffers\VertexBuffer.cpp">
+      <Filter>Source Files\Engine\Graphics\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Buffers\IndexBuffer.cpp">
+      <Filter>Source Files\Engine\Graphics\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Buffers\ConstantBuffer.cpp">
+      <Filter>Source Files\Engine\Graphics\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Graphics.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
-      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h">
-      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\Application.h">
-      <Filter>Header Files\Engine\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\Window.h">
-      <Filter>Header Files\Engine\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Application\Input.h">
       <Filter>Header Files\Engine\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
-      <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utils\Debug.h">
       <Filter>Header Files\Engine\Utils</Filter>
@@ -121,6 +127,36 @@
     </ClInclude>
     <ClInclude Include="Engine\Utils\String.h">
       <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Application\WindowClass.h">
+      <Filter>Header Files\Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Application\Window.h">
+      <Filter>Header Files\Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Application\Application.h">
+      <Filter>Header Files\Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\GraphicsDevice.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h">
+      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
+      <Filter>Header Files\Engine\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\RasterizerState.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Buffers\VertexBuffer.h">
+      <Filter>Header Files\Engine\Graphics\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Buffers\IndexBuffer.h">
+      <Filter>Header Files\Engine\Graphics\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Buffers\ConstantBuffer.h">
+      <Filter>Header Files\Engine\Graphics\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\Graphics.h">
       <Filter>Header Files\Engine\Graphics</Filter>

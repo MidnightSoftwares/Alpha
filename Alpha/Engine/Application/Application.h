@@ -1,35 +1,27 @@
-﻿#pragma once
+#pragma once
 
+#include "WindowClass.h"
 #include "Window.h"
-#include "Input.h"
 
-class Application
+#pragma push_macro("CreateWindow")
+#undef CreateWindow
+
+#pragma push_macro("PeekMessage")
+#undef PeekMessage
+
+class Application final
 {
-protected:
-    Application(HINSTANCE hInstance, std::unique_ptr<Window> window);
+public:
+    Application() = delete;
 
 public:
-    Application(const Application& application) = delete;
-    Application(Application&& application) = delete;
-
-    Application& operator=(const Application& application) = delete;
-    Application& operator=(Application&& application) = delete;
-
-    virtual ~Application() = default;
-
-protected:
-    virtual LRESULT HandleWindowMessage(UINT msg, WPARAM wParam, LPARAM lParam) const;
+    static WindowClassPtr CreateWindowClass(HINSTANCE hInstance, std::wstring name);
+    static WindowPtr CreateWindow(WindowClass* windowClass,
+        std::wstring title, int width, int height);
 
 public:
-    HINSTANCE HInstance() const;
-    Window* Window() const;
-    Input* Input() const;
-
-protected:
-    HINSTANCE mHInstance;
-    std::unique_ptr<::Window> mWindow;
-    std::unique_ptr<::Input> mInput;
+    static bool PeekMessage(Window* window);
 
 private:
-    friend ::Window;
+    static LRESULT CALLBACK HandleMessage(HWND handle, UINT msg, WPARAM wParam, LPARAM lParam);
 };

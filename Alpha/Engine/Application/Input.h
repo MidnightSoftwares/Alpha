@@ -1,21 +1,28 @@
 #pragma once
 
+#include <array>
 #include <queue>
 
 struct KeyEvent final
 {
+public:
     enum Type
     {
         Press,
         Release
     };
 
+public:
+    KeyEvent(Type type, unsigned char keyCode);
+
+public:
     Type Type;
     unsigned char KeyCode;
 };
 
 struct MouseEvent final
 {
+public:
     enum Type
     {
         Move,
@@ -30,23 +37,24 @@ struct MouseEvent final
         WheelDown
     };
 
+public:
+    MouseEvent(Type type, int x, int y);
+
+public:
     Type Type;
     int X;
     int Y;
 };
 
-class Input final
+class Input
 {
-public:
-    Input();
-
 public:
     void PushKeyPress(unsigned char keyCode);
     void PushKeyRelease(unsigned char keyCode);
     KeyEvent PopKeyEvent();
 
-    void PushChar(wchar_t ch);
-    wchar_t PopChar();
+    void PushCharInput(wchar_t ch);
+    wchar_t PopCharInput();
 
 public:
     void PushMouseMove(int x, int y);
@@ -75,8 +83,9 @@ public:
 
     bool KeyPressed(unsigned char keyCode) const;
 
-    bool KeyEventQueueEmpty() const;
-    bool CharQueueEmpty() const;
+    bool KeyEventsEmpty() const;
+
+    bool CharsInputsEmpty() const;
 
 public:
     int MousePosX() const;
@@ -86,18 +95,18 @@ public:
     bool MouseRightPressed() const;
     bool MouseMiddlePressed() const;
 
-    bool MouseEventQueueEmpty() const;
+    bool MouseEventsEmpty() const;
 
 private:
     bool mAutoRepeatKeys = false;
     bool mAutoRepeatChars = false;
-    bool mKeyPressed[UCHAR_MAX + 1] = {};
-    std::queue<KeyEvent> mKeyEventQueue;
-    std::queue<wchar_t> mCharQueue;
+    std::array<bool, UCHAR_MAX + 1> mKeyPressed{};
+    std::queue<KeyEvent> mKeyEvents;
+    std::queue<wchar_t> mCharInputs;
     int mMousePosX = 0;
     int mMousePosY = 0;
     bool mMouseLeftPressed = false;
     bool mMouseRightPressed = false;
     bool mMouseMiddlePressed = false;
-    std::queue<MouseEvent> mMouseEventQueue;
+    std::queue<MouseEvent> mMouseEvents;
 };

@@ -2,7 +2,7 @@
 
 #include "Debug.h"
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(const T& t):
     mValid{true},
     mT{t}
@@ -11,7 +11,7 @@ Expected<T, E>::Expected(const T& t):
     static_assert(std::is_copy_constructible_v<T>);
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(T&& t):
     mValid{true},
     mT{std::move(t)}
@@ -20,7 +20,7 @@ Expected<T, E>::Expected(T&& t):
     static_assert(std::is_move_assignable_v<T>);
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(const E& e):
     mValid{false},
     mE{e}
@@ -29,7 +29,7 @@ Expected<T, E>::Expected(const E& e):
     static_assert(std::is_copy_assignable_v<E>);
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(E&& e):
     mValid{false},
     mE{std::move(e)}
@@ -40,7 +40,7 @@ Expected<T, E>::Expected(E&& e):
 
 // ReSharper disable CppNonReclaimedResourceAcquisition
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(const Expected& expected):
     mValid{expected.mValid}
 {
@@ -54,7 +54,7 @@ Expected<T, E>::Expected(const Expected& expected):
     }
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::Expected(Expected&& expected)
 noexcept:
     mValid
@@ -70,7 +70,7 @@ noexcept:
     }
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>& Expected<T, E>::operator=(const Expected& expected)
 {
     mValid = expected.mValid;
@@ -87,7 +87,7 @@ Expected<T, E>& Expected<T, E>::operator=(const Expected& expected)
     return *this;
 }
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>& Expected<T, E>::operator=(Expected&& expected)
 noexcept
 {
@@ -107,7 +107,7 @@ noexcept
 
 // ReSharper restore CppNonReclaimedResourceAcquisition
 
-template <typename T, typename E>
+template <class T, class E>
 Expected<T, E>::~Expected()
 {
     if (mValid)
@@ -120,13 +120,13 @@ Expected<T, E>::~Expected()
     }
 }
 
-template <typename T, typename E>
+template <class T, class E>
 bool Expected<T, E>::Valid() const
 {
     return mValid;
 }
 
-template <typename T, typename E>
+template <class T, class E>
 T& Expected<T, E>::Value()
 {
     ASSERT(mValid);
@@ -134,7 +134,7 @@ T& Expected<T, E>::Value()
     return mT;
 }
 
-template <typename T, typename E>
+template <class T, class E>
 const T& Expected<T, E>::Value() const
 {
     ASSERT(mValid);
@@ -142,7 +142,7 @@ const T& Expected<T, E>::Value() const
     return mT;
 }
 
-template <typename T, typename E>
+template <class T, class E>
 const E& Expected<T, E>::Error() const
 {
     ASSERT(!mValid);

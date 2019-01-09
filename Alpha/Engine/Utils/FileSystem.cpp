@@ -9,6 +9,7 @@ const std::wstring& FileSystemUtils::ExecutableDirectory()
         WCHAR directory[MAX_PATH];
         GetModuleFileName(GetModuleHandle(nullptr), directory, MAX_PATH);
         PathRemoveFileSpec(directory);
+
         return directory;
     }();
 

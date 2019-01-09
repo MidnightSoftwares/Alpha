@@ -1,43 +1,27 @@
 #pragma once
 
-#include "../../Utils/Expected.h"
-
 #include <d3d11.h>
-#include <wrl/client.h>
+#include <functional>
+
+class GraphicsDevice;
 
 class VertexShader final
 {
+private:
+    VertexShader(GraphicsDevice* graphicsDevice,
+        ID3D11InputLayout* inputLayout, ID3D11VertexShader* handle);
+
 public:
-    enum Error
-    {
-        ReadFileToBufferFailed,
-        CreateInputLayoutFailed,
-        CreateShaderFailed
-    };
+    GraphicsDevice* GraphicsDevice() const;
 
 private:
-    VertexShader(Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout,
-        Microsoft::WRL::ComPtr<ID3D11VertexShader> handle);
-
-public:
-    VertexShader(const VertexShader& vertexShader) = delete;
-    VertexShader(VertexShader&& vertexShader) = delete;
-
-    VertexShader& operator=(const VertexShader& vertexShader) = delete;
-    VertexShader& operator=(VertexShader&& vertexShader) = delete;
-
-    ~VertexShader() = default;
-
-public:
-    static Expected<std::unique_ptr<VertexShader>, Error> Create(ID3D11Device* device,
-        D3D11_INPUT_ELEMENT_DESC* layoutDesc, UINT layoutElements,
-        const std::wstring& filePath);
-
-public:
-    ID3D11InputLayout* InputLayout() const;
-    ID3D11VertexShader* Handle() const;
+    ::GraphicsDevice* mGraphicsDevice;
+    ID3D11InputLayout* mInputLayout;
+    ID3D11VertexShader* mHandle;
 
 private:
-    Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> mHandle;
+    friend class Graphics;
 };
+
+using VertexShaderDeleter = std::function<void(VertexShader*)>;
+using VertexShaderPtr = std::unique_ptr<VertexShader, VertexShaderDeleter>;

@@ -1,58 +1,43 @@
-﻿#pragma once
+#pragma once
 
+#include "GraphicsDevice.h"
+#include "RasterizerState.h"
 #include "Shaders/VertexShader.h"
 #include "Shaders/PixelShader.h"
-
-class Window;
+#include "Buffers/VertexBuffer.h"
+#include "Buffers/IndexBuffer.h"
+#include "Buffers/ConstantBuffer.h"
 
 class Graphics final
 {
 public:
-    enum Error
-    {
-        CreateDeviceAndSwapChainFailed,
-        GetSwapChainBackBufferFailed,
-        CreateRenderTargetViewFailed,
-        CreateRasterizerStateFailed,
-        CreateVertexShaderFailed,
-        CreatePixelShaderFailed
-    };
-
-private:
-    Graphics(Window* window,
-        Microsoft::WRL::ComPtr<ID3D11Device> device,
-        Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext,
-        Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain,
-        Microsoft::WRL::ComPtr<ID3D11RenderTargetView> renderTargetView,
-        Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizerState,
-        std::unique_ptr<VertexShader> vertexShader,
-        std::unique_ptr<PixelShader> pixelShader);
+    Graphics() = delete;
 
 public:
-    Graphics(const Graphics& graphics) = delete;
-    Graphics(Graphics&& graphics) = delete;
-
-    Graphics& operator=(const Graphics& graphics) = delete;
-    Graphics& operator=(Graphics&& graphics) = delete;
-
-    ~Graphics() = default;
+    static GraphicsDevicePtr CreateGraphicsDevice(Window* window);
+    // TODO: Replace D3D11_RASTERIZER_DESC* with a custom object.
+    static RasterizerStatePtr CreateRasterizerState(GraphicsDevice* graphicsDevice,
+        const D3D11_RASTERIZER_DESC* description);
+    // TODO: Maybe remove input layout from vertex shader.
+    // TODO: Replace D3D11_INPUT_ELEMENT_DESC* with a custom object.
+    static VertexShaderPtr CreateVertexShader(GraphicsDevice* graphicsDevice,
+        const D3D11_INPUT_ELEMENT_DESC* layoutDesc, UINT layoutElements,
+        const std::wstring& filePath);
+    static PixelShaderPtr CreatePixelShader(GraphicsDevice* graphicsDevice,
+        const std::wstring& filePath);
+    // TODO: Replace D3D11_USAGE with custom enum.
+    static VertexBufferPtr CreateVertexBuffer(GraphicsDevice* graphicsDevice,
+        D3D11_USAGE usage, UINT elementSize, UINT elementCount, const void* data);
+    // TODO: Replace D3D11_USAGE with custom enum.
+    static IndexBufferPtr CreateIndexBuffer(GraphicsDevice* graphicsDevice,
+        D3D11_USAGE usage, UINT elementCount, const unsigned int* data);
+    static ConstantBufferPtr CreateConstantBuffer(GraphicsDevice* graphicsDevice,
+        UINT size, const void* data);
 
 public:
-    static Expected<std::unique_ptr<Graphics>, Error> Create(Window* window);
-
-public:
-    void RenderFrame() const;
-
-public:
-    Window* Window() const;
-
-private:
-    ::Window* mWindow;
-    Microsoft::WRL::ComPtr<ID3D11Device> mDevice;
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> mDeviceContext;
-    Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
-    Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRasterizerState;
-    std::unique_ptr<VertexShader> mVertexShader;
-    std::unique_ptr<PixelShader> mPixelShader;
+    // TODO: Remove this after complete refactoring.
+    static void TestRender(const GraphicsDevice* graphicsDevice,
+        const RasterizerState* rasterizerState,
+        const VertexShader* vertexShader, const PixelShader* pixelShader,
+        const VertexBuffer* vertexBuffer);
 };
