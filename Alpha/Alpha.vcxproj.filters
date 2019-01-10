@@ -93,9 +93,6 @@
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
       <Filter>Source Files\Engine\Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\RasterizerState.cpp">
-      <Filter>Source Files\Engine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\Buffers\VertexBuffer.cpp">
       <Filter>Source Files\Engine\Graphics\Buffers</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>Source Files\Engine\Graphics\Buffers</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\Graphics.cpp">
+      <Filter>Source Files\Engine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipeline.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,9 +146,6 @@
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
       <Filter>Header Files\Engine\Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Graphics\RasterizerState.h">
-      <Filter>Header Files\Engine\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Graphics\Buffers\VertexBuffer.h">
       <Filter>Header Files\Engine\Graphics\Buffers</Filter>
     </ClInclude>
@@ -159,6 +156,9 @@
       <Filter>Header Files\Engine\Graphics\Buffers</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\Graphics.h">
+      <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Pipeline.h">
       <Filter>Header Files\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>

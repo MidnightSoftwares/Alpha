@@ -134,7 +134,7 @@ WindowPtr Application::CreateWindow(WindowClass* windowClass, std::wstring title
     return window;
 }
 
-bool Application::PeekMessage(Window* window)
+bool Application::PeekMessage(const Window* window)
 {
     MSG msg;
 

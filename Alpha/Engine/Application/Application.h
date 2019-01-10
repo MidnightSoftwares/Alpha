@@ -20,7 +20,7 @@ public:
         std::wstring title, int width, int height);
 
 public:
-    static bool PeekMessage(Window* window);
+    static bool PeekMessage(const Window* window);
 
 private:
     static LRESULT CALLBACK HandleMessage(HWND handle, UINT msg, WPARAM wParam, LPARAM lParam);

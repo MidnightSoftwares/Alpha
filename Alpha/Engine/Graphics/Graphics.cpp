@@ -115,36 +115,145 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     };
 }
 
-RasterizerStatePtr Graphics::CreateRasterizerState(GraphicsDevice* graphicsDevice,
-    const D3D11_RASTERIZER_DESC* description)
+VertexBufferPtr Graphics::CreateVertexBuffer(GraphicsDevice* graphicsDevice, D3D11_USAGE usage,
+    UINT elementSize, UINT elementCount, const void* data)
 {
-    // Rasterizer state deleter
-    static const auto RASTERIZER_STATE_DELETER = [](RasterizerState* rasterizerState)
+    // Vertex buffer deleter
+    static const auto VERTEX_BUFFER_DELETER = [](VertexBuffer* vertexBuffer)
     {
-        rasterizerState->mHandle->Release();
+        vertexBuffer->mHandle->Release();
 
-        delete rasterizerState;
+        delete vertexBuffer;
     };
 
-    // Create rasterizer state
-    ID3D11RasterizerState* handle;
+    // Create buffer
+    D3D11_BUFFER_DESC description;
+    description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    description.ByteWidth = elementSize * elementCount;
+    description.CPUAccessFlags = 0;
+    description.MiscFlags = 0;
+    description.StructureByteStride = 0;
+    description.Usage = usage;
 
-    const auto hr = graphicsDevice->mDevice->CreateRasterizerState(description, &handle);
+    D3D11_SUBRESOURCE_DATA sbData;
+    sbData.SysMemPitch = 0;
+    sbData.SysMemSlicePitch = 0;
+    sbData.pSysMem = data;
+
+    ID3D11Buffer* handle;
+
+    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
 
     if (FAILED(hr))
     {
-        LOG_ERROR(L"D3D11Device::CreateRasterizerState: " + DebugUtils::COMErrorMessage(hr));
+        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
 
         return nullptr;
     }
 
-    // Create rasterizer state instance
-    return RasterizerStatePtr{
-        new RasterizerState{
+    // Create vertex buffer instance
+    return VertexBufferPtr{
+        new VertexBuffer{
             graphicsDevice,
+            elementSize,
+            elementCount,
             handle
         },
-        RASTERIZER_STATE_DELETER
+        VERTEX_BUFFER_DELETER
+    };
+}
+
+IndexBufferPtr Graphics::CreateIndexBuffer(GraphicsDevice* graphicsDevice,
+    D3D11_USAGE usage, UINT elementCount, const unsigned* data)
+{
+    // Index buffer deleter
+    static const auto INDEX_BUFFER_DELETER = [](IndexBuffer* indexBuffer)
+    {
+        indexBuffer->mHandle->Release();
+
+        delete indexBuffer;
+    };
+
+    // Create buffer
+    D3D11_BUFFER_DESC description;
+    description.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    description.ByteWidth = sizeof(unsigned int) * elementCount;
+    description.CPUAccessFlags = 0;
+    description.MiscFlags = 0;
+    description.StructureByteStride = 0;
+    description.Usage = usage;
+
+    D3D11_SUBRESOURCE_DATA sbData;
+    sbData.SysMemPitch = 0;
+    sbData.SysMemSlicePitch = 0;
+    sbData.pSysMem = data;
+
+    ID3D11Buffer* handle;
+
+    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
+
+    if (FAILED(hr))
+    {
+        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
+
+        return nullptr;
+    }
+
+    // Create index buffer instance
+    return IndexBufferPtr{
+        new IndexBuffer{
+            graphicsDevice,
+            elementCount,
+            handle
+        },
+        INDEX_BUFFER_DELETER
+    };
+}
+
+ConstantBufferPtr Graphics::CreateConstantBuffer(GraphicsDevice* graphicsDevice, UINT size,
+    const void* data)
+{
+    // Constant buffer deleter
+    static const auto CONSTANT_BUFFER_DELETER = [](ConstantBuffer* constantBuffer)
+    {
+        constantBuffer->mHandle->Release();
+
+        delete constantBuffer;
+    };
+
+    // Create buffer
+    D3D11_BUFFER_DESC description;
+    description.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    description.ByteWidth = size;
+    description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    description.MiscFlags = 0;
+    description.StructureByteStride = size + 16 - size % 16;
+    description.Usage = D3D11_USAGE_DYNAMIC;
+
+    D3D11_SUBRESOURCE_DATA sbData;
+    sbData.SysMemPitch = 0;
+    sbData.SysMemSlicePitch = 0;
+    sbData.pSysMem = data;
+
+    ID3D11Buffer* handle;
+
+    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
+
+    if (FAILED(hr))
+    {
+        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
+
+        return nullptr;
+    }
+
+    // Create constant buffer instance
+    return ConstantBufferPtr{
+        new ConstantBuffer{
+            graphicsDevice,
+            size,
+            handle
+        },
+        CONSTANT_BUFFER_DELETER
     };
 }
 
@@ -268,169 +377,74 @@ PixelShaderPtr Graphics::CreatePixelShader(GraphicsDevice* graphicsDevice,
     };
 }
 
-VertexBufferPtr Graphics::CreateVertexBuffer(GraphicsDevice* graphicsDevice, D3D11_USAGE usage,
-    UINT elementSize, UINT elementCount, const void* data)
+PipelinePtr Graphics::CreatePipeline(GraphicsDevice* graphicsDevice,
+    D3D_PRIMITIVE_TOPOLOGY primitiveTopology,
+    const VertexShader* vertexShader,
+    const D3D11_RASTERIZER_DESC* rasterizerDesc,
+    const PixelShader* pixelShader)
 {
-    // Vertex buffer deleter
-    static const auto VERTEX_BUFFER_DELETER = [](VertexBuffer* vertexBuffer)
+    // Pipeline deleter
+    static const auto PIPELINE_STATE_DELETER = [](Pipeline* pipeline)
     {
-        vertexBuffer->mHandle->Release();
+        pipeline->mRasterizerState->Release();
 
-        delete vertexBuffer;
+        delete pipeline;
     };
 
-    // Create buffer
-    D3D11_BUFFER_DESC description;
-    description.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    description.ByteWidth = elementSize * elementCount;
-    description.CPUAccessFlags = 0;
-    description.MiscFlags = 0;
-    description.StructureByteStride = 0;
-    description.Usage = usage;
+    // Create rasterizer state
+    ID3D11RasterizerState* rasterizerState;
 
-    D3D11_SUBRESOURCE_DATA sbData;
-    sbData.SysMemPitch = 0;
-    sbData.SysMemSlicePitch = 0;
-    sbData.pSysMem = data;
-
-    ID3D11Buffer* handle;
-
-    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
+    const auto hr = graphicsDevice->mDevice->CreateRasterizerState(
+        rasterizerDesc, &rasterizerState);
 
     if (FAILED(hr))
     {
-        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
+        LOG_ERROR(L"D3D11Device::CreateRasterizerState: " + DebugUtils::COMErrorMessage(hr));
 
         return nullptr;
     }
 
-    // Create vertex buffer instance
-    return VertexBufferPtr{
-        new VertexBuffer{
+    // Create pipeline instance
+    return PipelinePtr{
+        new Pipeline{
             graphicsDevice,
-            elementSize,
-            elementCount,
-            handle
+            primitiveTopology,
+            vertexShader,
+            rasterizerState,
+            pixelShader
         },
-        VERTEX_BUFFER_DELETER
-    };
-}
-
-IndexBufferPtr Graphics::CreateIndexBuffer(GraphicsDevice* graphicsDevice, D3D11_USAGE usage,
-    UINT elementCount, const unsigned* data)
-{
-    // Index buffer deleter
-    static const auto INDEX_BUFFER_DELETER = [](IndexBuffer* indexBuffer)
-    {
-        indexBuffer->mHandle->Release();
-
-        delete indexBuffer;
-    };
-
-    // Create buffer
-    D3D11_BUFFER_DESC description;
-    description.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    description.ByteWidth = sizeof(unsigned int) * elementCount;
-    description.CPUAccessFlags = 0;
-    description.MiscFlags = 0;
-    description.StructureByteStride = 0;
-    description.Usage = usage;
-
-    D3D11_SUBRESOURCE_DATA sbData;
-    sbData.SysMemPitch = 0;
-    sbData.SysMemSlicePitch = 0;
-    sbData.pSysMem = data;
-
-    ID3D11Buffer* handle;
-
-    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
-
-    if (FAILED(hr))
-    {
-        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
-
-        return nullptr;
-    }
-
-    // Create index buffer instance
-    return IndexBufferPtr{
-        new IndexBuffer{
-            graphicsDevice,
-            elementCount,
-            handle
-        },
-        INDEX_BUFFER_DELETER
-    };
-}
-
-ConstantBufferPtr Graphics::CreateConstantBuffer(GraphicsDevice* graphicsDevice, UINT size,
-    const void* data)
-{
-    // Constant buffer deleter
-    static const auto CONSTANT_BUFFER_DELETER = [](ConstantBuffer* constantBuffer)
-    {
-        constantBuffer->mHandle->Release();
-
-        delete constantBuffer;
-    };
-
-    // Create buffer
-    D3D11_BUFFER_DESC description;
-    description.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    description.ByteWidth = size;
-    description.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    description.MiscFlags = 0;
-    description.StructureByteStride = size + 16 - size % 16;
-    description.Usage = D3D11_USAGE_DYNAMIC;
-
-    D3D11_SUBRESOURCE_DATA sbData;
-    sbData.SysMemPitch = 0;
-    sbData.SysMemSlicePitch = 0;
-    sbData.pSysMem = data;
-
-    ID3D11Buffer* handle;
-
-    const auto hr = graphicsDevice->mDevice->CreateBuffer(&description, &sbData, &handle);
-
-    if (FAILED(hr))
-    {
-        LOG_ERROR(L"ID3D11Device::CreateBuffer: " + DebugUtils::COMErrorMessage(hr));
-
-        return nullptr;
-    }
-
-    // Create constant buffer instance
-    return ConstantBufferPtr{
-        new ConstantBuffer{
-            graphicsDevice,
-            size,
-            handle
-        },
-        CONSTANT_BUFFER_DELETER
+        PIPELINE_STATE_DELETER
     };
 }
 
 void Graphics::TestRender(const GraphicsDevice* graphicsDevice,
-    const RasterizerState* rasterizerState, const VertexShader* vertexShader,
-    const PixelShader* pixelShader, const VertexBuffer* vertexBuffer)
+    const VertexBuffer* vertexBuffer, const Pipeline* pipeline)
 {
+    // Clear
     static const FLOAT CLEAR_COLOR[] = {0.f, 0.f, 1.f, 1.f};
     graphicsDevice->mDeviceContext->ClearRenderTargetView(
         graphicsDevice->mRenderTargetView, CLEAR_COLOR);
 
-    graphicsDevice->mDeviceContext->RSSetState(rasterizerState->mHandle);
-
-    graphicsDevice->mDeviceContext->VSSetShader(vertexShader->mHandle, nullptr, 0);
-    graphicsDevice->mDeviceContext->IASetInputLayout(vertexShader->mInputLayout);
-
-    graphicsDevice->mDeviceContext->PSSetShader(pixelShader->mHandle, nullptr, 0);
-
+    // Set buffers
     UINT offset = 0;
     graphicsDevice->mDeviceContext->IASetVertexBuffers(0, 1,
         &vertexBuffer->mHandle, &vertexBuffer->mElementSize, &offset);
-    graphicsDevice->mDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+    // Set pipeline
+    graphicsDevice->mDeviceContext->IASetPrimitiveTopology(pipeline->mPrimitiveTopology);
+    graphicsDevice->mDeviceContext->IASetInputLayout(pipeline->mVertexShader->mInputLayout);
+
+    graphicsDevice->mDeviceContext->VSSetShader(pipeline->mVertexShader->mHandle, nullptr, 0);
+
+    graphicsDevice->mDeviceContext->RSSetState(pipeline->mRasterizerState);
+
+    graphicsDevice->mDeviceContext->PSSetShader(pipeline->mPixelShader->mHandle, nullptr, 0);
+
+    // Draw buffers
     graphicsDevice->mDeviceContext->Draw(vertexBuffer->mElementCount, 0);
+}
 
+void Graphics::SwapBuffers(const GraphicsDevice* graphicsDevice)
+{
     graphicsDevice->mSwapChain->Present(1, 0);
 }
