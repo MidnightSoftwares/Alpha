@@ -10,7 +10,8 @@ private:
         D3D_PRIMITIVE_TOPOLOGY primitiveTopology,
         const VertexShader* vertexShader,
         ID3D11RasterizerState* rasterizerState,
-        const PixelShader* pixelShader);
+        const PixelShader* pixelShader,
+        ID3D11DepthStencilState* depthStencilState);
 
 public:
     GraphicsDevice* GraphicsDevice() const;
@@ -21,6 +22,7 @@ private:
     const VertexShader* mVertexShader;
     ID3D11RasterizerState* mRasterizerState;
     const PixelShader* mPixelShader;
+    ID3D11DepthStencilState* mDepthStencilState;
 
 private:
     friend class Graphics;

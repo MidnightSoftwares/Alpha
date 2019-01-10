@@ -9,7 +9,10 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     // Graphics device deleter
     static const auto GRAPHICS_DEVICE_DELETER = [](GraphicsDevice* graphicsDevice)
     {
+        graphicsDevice->mDepthStencilView->Release();
+        graphicsDevice->mDepthStencilBuffer->Release();
         graphicsDevice->mRenderTargetView->Release();
+        graphicsDevice->mSCBackBuffer->Release();
         graphicsDevice->mSwapChain->Release();
         graphicsDevice->mDeviceContext->Release();
         graphicsDevice->mDevice->Release();
@@ -69,16 +72,14 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
         return nullptr;
     }
 
-    // TODO: Maybe move this outside of GraphicsDevice
-    // Create and set render target view
+    // Create render target view
     ID3D11RenderTargetView* renderTargetView;
 
     hr = device->CreateRenderTargetView(scBackBuffer, nullptr, &renderTargetView);
 
-    scBackBuffer->Release();
-
     if (FAILED(hr))
     {
+        scBackBuffer->Release();
         swapChain->Release();
         deviceContext->Release();
         device->Release();
@@ -88,17 +89,69 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
         return nullptr;
     }
 
-    deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+    // Create depth stencil buffer
+    D3D11_TEXTURE2D_DESC depthStencilDesc;
+    depthStencilDesc.ArraySize = 1;
+    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    depthStencilDesc.CPUAccessFlags = 0;
+    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    depthStencilDesc.Height = window->mHeight;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.MiscFlags = 0;
+    depthStencilDesc.SampleDesc.Count = 1;
+    depthStencilDesc.SampleDesc.Quality = 0;
+    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+    depthStencilDesc.Width = window->mWidth;
+
+    ID3D11Texture2D* depthStencilBuffer;
+
+    hr = device->CreateTexture2D(&depthStencilDesc, nullptr, &depthStencilBuffer);
+
+    if (FAILED(hr))
+    {
+        renderTargetView->Release();
+        scBackBuffer->Release();
+        swapChain->Release();
+        deviceContext->Release();
+        device->Release();
+
+        LOG_ERROR(L"D3D11Device::CreateTexture2D: " + DebugUtils::COMErrorMessage(hr));
+
+        return nullptr;
+    }
+
+    // Create depth stencil view
+    ID3D11DepthStencilView* depthStencilView;
+
+    hr = device->CreateDepthStencilView(depthStencilBuffer, nullptr, &depthStencilView);
+
+    if (FAILED(hr))
+    {
+        depthStencilBuffer->Release();
+        renderTargetView->Release();
+        scBackBuffer->Release();
+        swapChain->Release();
+        deviceContext->Release();
+        device->Release();
+
+        LOG_ERROR(L"D3D11Device::CreateDepthStencilView: " + DebugUtils::COMErrorMessage(hr));
+
+        return nullptr;
+    }
+
+    // TODO: Maybe move this to pipeline.
+    // Set render targets
+    deviceContext->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
     // TODO: Move this to other method.
-    // Create and set the viewport
+    // Set the viewport
     D3D11_VIEWPORT viewport;
     viewport.TopLeftX = 0.f;
     viewport.TopLeftY = 0.f;
     viewport.Width = static_cast<FLOAT>(window->mWidth);
     viewport.Height = static_cast<FLOAT>(window->mHeight);
     viewport.MinDepth = 0.f;
-    viewport.MaxDepth = 0.f;
+    viewport.MaxDepth = 1.0f;
 
     deviceContext->RSSetViewports(1, &viewport);
 
@@ -109,7 +162,10 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
             device,
             deviceContext,
             swapChain,
-            renderTargetView
+            scBackBuffer,
+            renderTargetView,
+            depthStencilBuffer,
+            depthStencilView
         },
         GRAPHICS_DEVICE_DELETER
     };
@@ -381,11 +437,13 @@ PipelinePtr Graphics::CreatePipeline(GraphicsDevice* graphicsDevice,
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology,
     const VertexShader* vertexShader,
     const D3D11_RASTERIZER_DESC* rasterizerDesc,
-    const PixelShader* pixelShader)
+    const PixelShader* pixelShader,
+    const D3D11_DEPTH_STENCIL_DESC* depthStencilDesc)
 {
     // Pipeline deleter
     static const auto PIPELINE_STATE_DELETER = [](Pipeline* pipeline)
     {
+        pipeline->mDepthStencilState->Release();
         pipeline->mRasterizerState->Release();
 
         delete pipeline;
@@ -394,12 +452,26 @@ PipelinePtr Graphics::CreatePipeline(GraphicsDevice* graphicsDevice,
     // Create rasterizer state
     ID3D11RasterizerState* rasterizerState;
 
-    const auto hr = graphicsDevice->mDevice->CreateRasterizerState(
+    auto hr = graphicsDevice->mDevice->CreateRasterizerState(
         rasterizerDesc, &rasterizerState);
 
     if (FAILED(hr))
     {
         LOG_ERROR(L"D3D11Device::CreateRasterizerState: " + DebugUtils::COMErrorMessage(hr));
+
+        return nullptr;
+    }
+
+    // Create depth stencil state
+    ID3D11DepthStencilState* depthStencilState;
+
+    hr = graphicsDevice->mDevice->CreateDepthStencilState(depthStencilDesc, &depthStencilState);
+
+    if (FAILED(hr))
+    {
+        rasterizerState->Release();
+
+        LOG_ERROR(L"D3D11Device::CreateDepthStencilState: " + DebugUtils::COMErrorMessage(hr));
 
         return nullptr;
     }
@@ -411,26 +483,26 @@ PipelinePtr Graphics::CreatePipeline(GraphicsDevice* graphicsDevice,
             primitiveTopology,
             vertexShader,
             rasterizerState,
-            pixelShader
+            pixelShader,
+            depthStencilState
         },
         PIPELINE_STATE_DELETER
     };
 }
 
-void Graphics::TestRender(const GraphicsDevice* graphicsDevice,
-    const VertexBuffer* vertexBuffer, const Pipeline* pipeline)
+void Graphics::TestClear(const GraphicsDevice* graphicsDevice)
 {
-    // Clear
-    static const FLOAT CLEAR_COLOR[] = {0.f, 0.f, 1.f, 1.f};
+    static const FLOAT CLEAR_COLOR[] = {0.f, 0.f, 0.f, 1.f};
+
     graphicsDevice->mDeviceContext->ClearRenderTargetView(
         graphicsDevice->mRenderTargetView, CLEAR_COLOR);
 
-    // Set buffers
-    UINT offset = 0;
-    graphicsDevice->mDeviceContext->IASetVertexBuffers(0, 1,
-        &vertexBuffer->mHandle, &vertexBuffer->mElementSize, &offset);
+    graphicsDevice->mDeviceContext->ClearDepthStencilView(
+        graphicsDevice->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+}
 
-    // Set pipeline
+void Graphics::TestSetPipeline(const GraphicsDevice* graphicsDevice, const Pipeline* pipeline)
+{
     graphicsDevice->mDeviceContext->IASetPrimitiveTopology(pipeline->mPrimitiveTopology);
     graphicsDevice->mDeviceContext->IASetInputLayout(pipeline->mVertexShader->mInputLayout);
 
@@ -440,7 +512,16 @@ void Graphics::TestRender(const GraphicsDevice* graphicsDevice,
 
     graphicsDevice->mDeviceContext->PSSetShader(pipeline->mPixelShader->mHandle, nullptr, 0);
 
-    // Draw buffers
+    graphicsDevice->mDeviceContext->OMSetDepthStencilState(pipeline->mDepthStencilState, 0);
+}
+
+void Graphics::TestRender(const GraphicsDevice* graphicsDevice, const VertexBuffer* vertexBuffer)
+{
+    UINT offset = 0;
+
+    graphicsDevice->mDeviceContext->IASetVertexBuffers(0, 1,
+        &vertexBuffer->mHandle, &vertexBuffer->mElementSize, &offset);
+
     graphicsDevice->mDeviceContext->Draw(vertexBuffer->mElementCount, 0);
 }
 

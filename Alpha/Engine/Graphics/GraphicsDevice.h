@@ -10,7 +10,8 @@ class GraphicsDevice final
 private:
     GraphicsDevice(Window* window,
         ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain,
-        ID3D11RenderTargetView* renderTargetView);
+        ID3D11Texture2D* scBackBuffer, ID3D11RenderTargetView* renderTargetView,
+        ID3D11Texture2D* depthStencilBuffer, ID3D11DepthStencilView* depthStencilView);
 
 public:
     Window* Window() const;
@@ -20,7 +21,10 @@ private:
     ID3D11Device* mDevice;
     ID3D11DeviceContext* mDeviceContext;
     IDXGISwapChain* mSwapChain;
+    ID3D11Texture2D* mSCBackBuffer;
     ID3D11RenderTargetView* mRenderTargetView;
+    ID3D11Texture2D* mDepthStencilBuffer;
+    ID3D11DepthStencilView* mDepthStencilView;
 
 private:
     friend class Graphics;

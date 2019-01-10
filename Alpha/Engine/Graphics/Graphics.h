@@ -37,12 +37,15 @@ public:
         D3D_PRIMITIVE_TOPOLOGY primitiveTopology,
         const VertexShader* vertexShader,
         const D3D11_RASTERIZER_DESC* rasterizerDesc,
-        const PixelShader* pixelShader);
+        const PixelShader* pixelShader,
+        const D3D11_DEPTH_STENCIL_DESC* depthStencilDesc);
 
 public:
-    // TODO: Remove this after complete refactoring.
-    static void TestRender(const GraphicsDevice* graphicsDevice,
-        const VertexBuffer* vertexBuffer, const Pipeline* pipeline);
+    // TODO: Remove TestXXX methods after complete refactoring.
+
+    static void TestClear(const GraphicsDevice* graphicsDevice);
+    static void TestSetPipeline(const GraphicsDevice* graphicsDevice, const Pipeline* pipeline);
+    static void TestRender(const GraphicsDevice* graphicsDevice, const VertexBuffer* vertexBuffer);
 
     static void SwapBuffers(const GraphicsDevice* graphicsDevice);
 };

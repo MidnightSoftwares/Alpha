@@ -7,7 +7,7 @@
 
 struct Vertex final
 {
-    DirectX::XMFLOAT2 Position;
+    DirectX::XMFLOAT3 Position;
     DirectX::XMFLOAT3 Color;
 };
 
@@ -28,13 +28,24 @@ int WINAPI wWinMain(
     // Create vertex buffer
     const Vertex vertices[] =
     {
-        {{-0.5f, -0.5f}, {1.f, 0.f, 0.f}},
-        {{0.0f, 0.5f}, {0.f, 1.f, 0.f}},
-        {{0.5f, -0.5f}, {0.f, 0.f, 1.f}}
+        {{-0.75f, -0.75f, 1.f}, {1.f, 0.f, 0.f}},
+        {{0.0f, 0.75f, 1.f}, {0.f, 1.f, 0.f}},
+        {{0.75f, -0.75f, 1.f}, {0.f, 0.f, 1.f}}
     };
 
     const auto vertexBuffer = Graphics::CreateVertexBuffer(graphicsDevice.get(),
         D3D11_USAGE_DEFAULT, sizeof(Vertex), ARRAYSIZE(vertices), vertices);
+
+    // Create second vertex buffer
+    const Vertex vertices2[] =
+    {
+        {{-0.5f, -0.5f, 0.f}, {1.f, 0.f, 0.f}},
+        {{0.0f, 0.5f, 0.f}, {1.f, 0.f, 0.f}},
+        {{0.5f, -0.5f, 0.f}, {1.f, 0.f, 0.f}}
+    };
+
+    const auto vertexBuffer2 = Graphics::CreateVertexBuffer(graphicsDevice.get(),
+        D3D11_USAGE_DEFAULT, sizeof(Vertex), ARRAYSIZE(vertices2), vertices2);
 
     // Create shaders
     const auto& shadersDirectory = FileSystemUtils::ExecutableDirectory();
@@ -44,7 +55,7 @@ int WINAPI wWinMain(
         {
             "POSITION",
             0,
-            DXGI_FORMAT_R32G32_FLOAT,
+            DXGI_FORMAT_R32G32B32_FLOAT,
             0,
             D3D11_APPEND_ALIGNED_ELEMENT,
             D3D11_INPUT_PER_VERTEX_DATA,
@@ -81,11 +92,20 @@ int WINAPI wWinMain(
     rasterizerDesc.ScissorEnable = false;
     rasterizerDesc.SlopeScaledDepthBias = 0.f;
 
+    D3D11_DEPTH_STENCIL_DESC depthStencilDesc{};
+    depthStencilDesc.DepthEnable = true;
+    depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
     const auto pipeline = Graphics::CreatePipeline(graphicsDevice.get(),
         D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
         vertexShader.get(),
         &rasterizerDesc,
-        pixelShader.get());
+        pixelShader.get(),
+        &depthStencilDesc);
+
+    // Set pipeline
+    Graphics::TestSetPipeline(graphicsDevice.get(), pipeline.get());
 
     // Application loop
     while (!window->CloseRequested())
@@ -115,7 +135,9 @@ int WINAPI wWinMain(
             window->PopMouseEvent();
         }
 
-        Graphics::TestRender(graphicsDevice.get(), vertexBuffer.get(), pipeline.get());
+        Graphics::TestClear(graphicsDevice.get());
+        Graphics::TestRender(graphicsDevice.get(), vertexBuffer.get());
+        Graphics::TestRender(graphicsDevice.get(), vertexBuffer2.get());
         Graphics::SwapBuffers(graphicsDevice.get());
 
         Sleep(16);
