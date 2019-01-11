@@ -1,7 +1,7 @@
-#include "Engine/Application/Application.h"
+#include "Engine/Application/WindowClass.h"
+#include "Engine/Application/Window.h"
 #include "Engine/Graphics/Graphics.h"
 #include "Engine/Utils/FileSystem.h"
-#include "Engine/Utils/Debug.h"
 
 #include <DirectXMath.h>
 
@@ -19,8 +19,8 @@ int WINAPI wWinMain(
     _In_ int /* nShowCmd */)
 {
     // Create window
-    const auto windowClass = Application::CreateWindowClass(hInstance, L"MainWindowClass");
-    const auto window = Application::CreateWindow(windowClass.get(), L"Alpha", 1280, 720);
+    const auto windowClass = WindowClass::Create(hInstance, L"MainWindowClass");
+    const auto window = Window::Create(windowClass.get(), L"Alpha", 1280, 720);
 
     // Create graphics device
     const auto graphicsDevice = Graphics::CreateGraphicsDevice(window.get());
@@ -110,14 +110,14 @@ int WINAPI wWinMain(
     // Application loop
     while (!window->CloseRequested())
     {
-        if (Application::PeekMessage(window.get()))
+        if (window->ProcessMessage())
         {
             continue;
         }
 
-        while (!window->KeyEventsEmpty())
+        while (!window->Keyboard()->KeyEventsEmpty())
         {
-            const auto keyEvent = window->PopKeyEvent();
+            const auto keyEvent = window->Keyboard()->PopKeyEvent();
 
             if (keyEvent.Type == KeyEvent::Release && keyEvent.KeyCode == VK_ESCAPE)
             {
@@ -125,14 +125,14 @@ int WINAPI wWinMain(
             }
         }
 
-        while (!window->CharsInputsEmpty())
+        while (!window->Keyboard()->CharsInputsEmpty())
         {
-            window->PopCharInput();
+            window->Keyboard()->PopCharInput();
         }
 
-        while (!window->MouseEventsEmpty())
+        while (!window->Mouse()->EventsEmpty())
         {
-            window->PopMouseEvent();
+            window->Mouse()->PopEvent();
         }
 
         Graphics::TestClear(graphicsDevice.get());

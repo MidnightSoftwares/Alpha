@@ -22,8 +22,8 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
 
     // Create device, device context and swap chain
     DXGI_SWAP_CHAIN_DESC scd;
-    scd.BufferDesc.Width = window->mWidth;
-    scd.BufferDesc.Height = window->mHeight;
+    scd.BufferDesc.Width = window->Width();
+    scd.BufferDesc.Height = window->Height();
     scd.BufferDesc.RefreshRate.Numerator = 60;
     scd.BufferDesc.RefreshRate.Denominator = 1;
     scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -35,7 +35,7 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
 
     scd.BufferCount = 1;
     scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    scd.OutputWindow = window->mHandle;
+    scd.OutputWindow = window->Handle();
     scd.Windowed = true;
     scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
     scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -95,13 +95,13 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.Height = window->mHeight;
+    depthStencilDesc.Height = window->Height();
     depthStencilDesc.MipLevels = 1;
     depthStencilDesc.MiscFlags = 0;
     depthStencilDesc.SampleDesc.Count = 1;
     depthStencilDesc.SampleDesc.Quality = 0;
     depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthStencilDesc.Width = window->mWidth;
+    depthStencilDesc.Width = window->Width();
 
     ID3D11Texture2D* depthStencilBuffer;
 
@@ -148,8 +148,8 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     D3D11_VIEWPORT viewport;
     viewport.TopLeftX = 0.f;
     viewport.TopLeftY = 0.f;
-    viewport.Width = static_cast<FLOAT>(window->mWidth);
-    viewport.Height = static_cast<FLOAT>(window->mHeight);
+    viewport.Width = static_cast<FLOAT>(window->Width());
+    viewport.Height = static_cast<FLOAT>(window->Height());
     viewport.MinDepth = 0.f;
     viewport.MaxDepth = 1.0f;
 

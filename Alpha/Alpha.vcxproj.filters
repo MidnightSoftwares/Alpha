@@ -60,9 +60,6 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Application\Input.cpp">
-      <Filter>Source Files\Engine\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Utils\Debug.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
     </ClCompile>
@@ -79,9 +76,6 @@
       <Filter>Source Files\Engine\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Application\Window.cpp">
-      <Filter>Source Files\Engine\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\Application.cpp">
       <Filter>Source Files\Engine\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\GraphicsDevice.cpp">
@@ -108,11 +102,14 @@
     <ClCompile Include="Engine\Graphics\Pipeline.cpp">
       <Filter>Source Files\Engine\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Application\MouseInput.cpp">
+      <Filter>Source Files\Engine\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Application\KeyboardInput.cpp">
+      <Filter>Source Files\Engine\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Application\Input.h">
-      <Filter>Header Files\Engine\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utils\Debug.h">
       <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
@@ -132,9 +129,6 @@
       <Filter>Header Files\Engine\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Application\Window.h">
-      <Filter>Header Files\Engine\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\Application.h">
       <Filter>Header Files\Engine\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\GraphicsDevice.h">
@@ -160,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Graphics\Pipeline.h">
       <Filter>Header Files\Engine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Application\MouseInput.h">
+      <Filter>Header Files\Engine\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Application\KeyboardInput.h">
+      <Filter>Header Files\Engine\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

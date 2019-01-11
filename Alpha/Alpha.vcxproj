@@ -166,8 +166,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Application\Application.cpp" />
-    <ClCompile Include="Engine\Application\Input.cpp" />
     <ClCompile Include="Engine\Application\Window.cpp" />
     <ClCompile Include="Engine\Application\WindowClass.cpp" />
     <ClCompile Include="Engine\Graphics\Buffers\ConstantBuffer.cpp" />
@@ -182,11 +180,11 @@
     <ClCompile Include="Engine\Utils\Debug.cpp" />
     <ClCompile Include="Engine\Utils\FileSystem.cpp" />
     <ClCompile Include="Engine\Utils\String.cpp" />
+    <ClCompile Include="Engine\Application\KeyboardInput.cpp" />
+    <ClCompile Include="Engine\Application\MouseInput.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Application\Application.h" />
-    <ClInclude Include="Engine\Application\Input.h" />
     <ClInclude Include="Engine\Application\Window.h" />
     <ClInclude Include="Engine\Application\WindowClass.h" />
     <ClInclude Include="Engine\Graphics\Buffers\ConstantBuffer.h" />
@@ -202,6 +200,8 @@
     <ClInclude Include="Engine\Utils\Debug.h" />
     <ClInclude Include="Engine\Utils\FileSystem.h" />
     <ClInclude Include="Engine\Utils\String.h" />
+    <ClInclude Include="Engine\Application\KeyboardInput.h" />
+    <ClInclude Include="Engine\Application\MouseInput.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Resources\Shaders\PixelShader.hlsl">
