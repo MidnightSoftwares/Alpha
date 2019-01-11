@@ -209,12 +209,7 @@ VertexBufferPtr Graphics::CreateVertexBuffer(GraphicsDevice* graphicsDevice, D3D
 
     // Create vertex buffer instance
     return VertexBufferPtr{
-        new VertexBuffer{
-            graphicsDevice,
-            elementSize,
-            elementCount,
-            handle
-        },
+        new VertexBuffer{graphicsDevice, elementSize, elementCount, handle},
         VERTEX_BUFFER_DELETER
     };
 }
@@ -257,11 +252,7 @@ IndexBufferPtr Graphics::CreateIndexBuffer(GraphicsDevice* graphicsDevice,
 
     // Create index buffer instance
     return IndexBufferPtr{
-        new IndexBuffer{
-            graphicsDevice,
-            elementCount,
-            handle
-        },
+        new IndexBuffer{graphicsDevice, elementCount, handle},
         INDEX_BUFFER_DELETER
     };
 }
@@ -304,11 +295,7 @@ ConstantBufferPtr Graphics::CreateConstantBuffer(GraphicsDevice* graphicsDevice,
 
     // Create constant buffer instance
     return ConstantBufferPtr{
-        new ConstantBuffer{
-            graphicsDevice,
-            size,
-            handle
-        },
+        new ConstantBuffer{graphicsDevice, size, handle},
         CONSTANT_BUFFER_DELETER
     };
 }
@@ -374,11 +361,7 @@ VertexShaderPtr Graphics::CreateVertexShader(GraphicsDevice* graphicsDevice,
 
     // Create vertex shader instance
     return VertexShaderPtr{
-        new VertexShader{
-            graphicsDevice,
-            inputLayout,
-            handle
-        },
+        new VertexShader{graphicsDevice, inputLayout, handle},
         VERTEX_SHADER_DELETER
     };
 }
@@ -425,10 +408,7 @@ PixelShaderPtr Graphics::CreatePixelShader(GraphicsDevice* graphicsDevice,
 
     // Create pixel shader instance
     return PixelShaderPtr{
-        new PixelShader{
-            graphicsDevice,
-            handle
-        },
+        new PixelShader{graphicsDevice, handle},
         PIXEL_SHADER_DELETER
     };
 }

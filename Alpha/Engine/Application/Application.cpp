@@ -35,10 +35,7 @@ WindowClassPtr Application::CreateWindowClass(HINSTANCE hInstance, std::wstring 
 
     // Create window class instance
     return WindowClassPtr{
-        new WindowClass{
-            hInstance,
-            std::move(name)
-        },
+        new WindowClass{hInstance, std::move(name)},
         WINDOW_CLASS_DELETER
     };
 }
@@ -106,13 +103,7 @@ WindowPtr Application::CreateWindow(WindowClass* windowClass, std::wstring title
 
     // Create window instance
     auto window = WindowPtr{
-        new Window{
-            windowClass,
-            std::move(title),
-            width,
-            height,
-            handle
-        },
+        new Window{windowClass, std::move(title), width, height, handle},
         WINDOW_DELETER
     };
 
@@ -136,7 +127,9 @@ WindowPtr Application::CreateWindow(WindowClass* windowClass, std::wstring title
 
 bool Application::PeekMessage(const Window* window)
 {
-    MSG msg;
+    // NOTE: Static may be problematic if this function is called during message dispatch.
+    // But this should not happens.
+    static MSG msg{};
 
 #pragma pop_macro("PeekMessage")
     if (!PeekMessage(&msg, window->mHandle, 0, 0, PM_REMOVE))
