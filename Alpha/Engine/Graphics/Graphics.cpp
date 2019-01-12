@@ -10,9 +10,7 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     static const auto GRAPHICS_DEVICE_DELETER = [](GraphicsDevice* graphicsDevice)
     {
         graphicsDevice->mDepthStencilView->Release();
-        graphicsDevice->mDepthStencilBuffer->Release();
         graphicsDevice->mRenderTargetView->Release();
-        graphicsDevice->mSCBackBuffer->Release();
         graphicsDevice->mSwapChain->Release();
         graphicsDevice->mDeviceContext->Release();
         graphicsDevice->mDevice->Release();
@@ -77,9 +75,10 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
 
     hr = device->CreateRenderTargetView(scBackBuffer, nullptr, &renderTargetView);
 
+    scBackBuffer->Release();
+
     if (FAILED(hr))
     {
-        scBackBuffer->Release();
         swapChain->Release();
         deviceContext->Release();
         device->Release();
@@ -110,7 +109,6 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
     if (FAILED(hr))
     {
         renderTargetView->Release();
-        scBackBuffer->Release();
         swapChain->Release();
         deviceContext->Release();
         device->Release();
@@ -125,11 +123,11 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
 
     hr = device->CreateDepthStencilView(depthStencilBuffer, nullptr, &depthStencilView);
 
+    depthStencilBuffer->Release();
+
     if (FAILED(hr))
     {
-        depthStencilBuffer->Release();
         renderTargetView->Release();
-        scBackBuffer->Release();
         swapChain->Release();
         deviceContext->Release();
         device->Release();
@@ -162,9 +160,7 @@ GraphicsDevicePtr Graphics::CreateGraphicsDevice(Window* window)
             device,
             deviceContext,
             swapChain,
-            scBackBuffer,
             renderTargetView,
-            depthStencilBuffer,
             depthStencilView
         },
         GRAPHICS_DEVICE_DELETER
